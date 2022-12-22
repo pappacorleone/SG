@@ -1,4 +1,6 @@
+import os
 import matplotlib.pyplot as plt
+from PIL import Image
 
 def generate_weekly_summary(tasks, habits):
     # Get the data for the tasks and habits

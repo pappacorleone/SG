@@ -2,8 +2,10 @@ import telegram
 import tasks
 import database
 import datetime
+from database import USER_CHAT_IDS, cursor
 
-bot = telegram.Bot(token=5879721167:AAEl1EzoHTbLNJOHKeYJt_KlxzgBAsyaozU)
+
+bot = telegram.Bot(token="5879721167:AAEl1EzoHTbLNJOHKeYJt_KlxzgBAsyaozU")
 
 def handle_input(bot, update):
     chat_id = update.message.chat_id

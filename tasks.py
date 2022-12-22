@@ -1,4 +1,6 @@
 import datetime
+from database import conn, cursor, create_task, view_list, update_status, main_menu
+from infographic import generate_weekly_summary, generate_comprehensive_summary
 
 def create_task(bot=None, chat_id=None):
     try:
@@ -54,7 +56,7 @@ def view_list(bot=None, chat_id=None):
     
     main_menu()
     
- def update_status(botdef update_status(bot=None, chat_id=None):
+def update_status(bot=None, chat_id=None):
     try:
         name = input("Enter the name of the task or habit: ")
         type = input("Enter the type of the task or habit (task, habit): ")
@@ -80,7 +82,7 @@ def view_list(bot=None, chat_id=None):
         print("An error occurred:", e)
         main_menu()
                    
-  def delete_task(bot=None, chat_id=None):
+def delete_task(bot=None, chat_id=None):
     try:
         name = input("Enter the name of the task or habit to delete: ")
         type = input("Enter the type of the task or habit (task, habit): ")
@@ -117,6 +119,3 @@ def send_weekly_summary(bot, chat_id):
     
     generate_comprehensive_summary(tasks, habits)
     bot.send_photo(chat_id, open("comprehensive_summary.png", "rb"))
-
-
-

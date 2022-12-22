@@ -1,7 +1,15 @@
 import sqlite3
+from infographic import generate_weekly_summary, generate_comprehensive_summary
 
 conn = sqlite3.connect("tasks.db")
+conn = sqlite3.connect("users.db")
 cursor = conn.cursor()
+
+# Create users table if it doesn't exist
+cursor.execute("CREATE TABLE IF NOT EXISTS users (chat_id integer)")
+
+# Retrieve all chat IDs from the database
+USER_CHAT_IDS = cursor.execute("SELECT chat_id FROM users").fetchall()
 
 # Create tasks table if it doesn't exist
 cursor.execute("CREATE TABLE IF NOT EXISTS tasks (name text, description text, date text, status text)")
@@ -86,3 +94,58 @@ def delete_task(name, type, bot=None, chat_id=None):
             print("Task or habit deleted successfully! Keep up the good work!")
     except Exception as e:
         print("An error occurred:", e)
+
+def create_user(chat_id):
+    try:
+        cursor.execute("INSERT INTO users VALUES (?)", (chat_id,))
+        conn.commit()
+        print("User created successfully!")
+    except Exception as e:
+        print("An error occurred:", e)
+
+def delete_user(chat_id):
+    try:
+        cursor.execute("DELETE FROM users WHERE chat_id=?", (chat_id,))
+        conn.commit()
+        print("User deleted successfully!")
+    except Exception as e:
+        print("An error occurred:", e)
+
+def main_menu(bot=None, chat_id=None):
+    options = [
+    "Create a new task or habit",
+    "View current task and habit list",
+    "Update the status of a task or habit",
+    "Delete a task or habit",
+    "Generate a weekly summary infographic",
+    "Generate a comprehensive summary infographic",
+    "Quit"
+    ]
+    if bot:
+        message = "Please select an option:\n"
+        for i, option in enumerate(options):
+            message += f"{i+1}. {option}\n"
+        bot.send_message(chat_id, message)
+    else:
+        print("Please select an option:")
+        for i, option in enumerate(options):
+            print(f"{i+1}. {option}")
+
+    choice = input("Enter your choice: ")
+    if choice == "1":
+        create_task(bot=bot, chat_id=chat_id)
+    elif choice == "2":
+        view_list(bot=bot, chat_id=chat_id)
+    elif choice == "3":
+        update_status(bot=bot, chat_id=chat_id)
+    elif choice == "4":
+        delete_task(bot=bot, chat_id=chat_id)
+    elif choice == "5":
+        generate_weekly_summary(bot=bot, chat_id=chat_id)
+    elif choice == "6":
+        generate_comprehensive_summary(bot=bot, chat_id=chat_id)
+    elif choice == "7":
+        return
+    else:
+        print("Invalid choice. Please try again.")
+        main_menu(bot=bot, chat_id=chat_id)
