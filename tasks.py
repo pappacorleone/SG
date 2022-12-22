@@ -1,3 +1,5 @@
+import datetime
+
 def create_task(bot=None, chat_id=None):
     try:
         name = input("Enter the name of the task or habit: ")
@@ -102,7 +104,19 @@ def view_list(bot=None, chat_id=None):
         print("An error occurred:", e)
         main_menu()
 
+def send_daily_summary(bot, chat_id):
+    tasks = cursor.execute("SELECT * FROM tasks WHERE date=?", (datetime.now().strftime("%Y-%m-%d"),)).fetchall()
+    habits = cursor.execute("SELECT * FROM habits WHERE date=?", (datetime.now().strftime("%Y-%m-%d"),)).fetchall()
+    
+    generate_weekly_summary(tasks, habits)
+    bot.send_photo(chat_id, open("weekly_summary.png", "rb"))
 
+def send_weekly_summary(bot, chat_id):
+    tasks = cursor.execute("SELECT * FROM tasks").fetchall()
+    habits = cursor.execute("SELECT * FROM habits").fetchall()
+    
+    generate_comprehensive_summary(tasks, habits)
+    bot.send_photo(chat_id, open("comprehensive_summary.png", "rb"))
 
 
 
